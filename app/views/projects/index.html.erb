@@ -142,7 +142,7 @@
 			];
 
 			var chartOptionsForAllProjects = {
-			  title: 'Task status of all projects',  is3D: true
+			  title: 'Task status of all <%= @all_managing_projects.count %> projects',  is3D: true
 			};
 
 			var charDivIdForAllProjects = 'all-projects-piChart-div';
@@ -247,7 +247,7 @@
         ];
 
         var chartOptionsForAllProjects = {
-          title: 'Task status of all projects',  is3D: true
+          title: 'Task status of <%= @developing_projects.count %> projects',  is3D: true
         };
 
         var charDivIdForAllProjects = 'all-projects-piChart-div';
