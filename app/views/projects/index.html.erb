@@ -119,7 +119,7 @@
 	<br />
 	
 	<% @all_managing_projects.each do |project| %>
-		<p><strong> <%= project.project_name %> </strong></p>
+		<p><strong> <%= link_to project.project_name, project_path(project) %> </strong></p>
 		<div id="project-<%= project.id %>-piChart-div">
 		
 		</div>
@@ -224,6 +224,7 @@
 	</div>
 	
 	<% @developing_projects.each do |project| %>
+		<p><strong> <%= link_to project.project_name, project_path(project) %> </strong></p>
 		<div id="project-<%= project.id %>-piChart-div">
 		
 		</div>
