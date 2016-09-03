@@ -50,3 +50,10 @@ gem 'devise', '3.5.6'
 
 # Use Omniauth gem for social logins
 gem 'omniauth'
+
+
+# For HEroku Deploy
+# Use sqlite3 as the database for Active Record
+  gem 'sqlite3', group: :development # Added development group.
+  gem 'pg', group: :production # Added postgres and made it production only.
+  gem 'rails_12factor'
