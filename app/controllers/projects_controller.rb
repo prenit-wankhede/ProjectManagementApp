@@ -4,17 +4,17 @@ class ProjectsController < ApplicationController
 
 	def index
 		if(current_user.role == "Project Manager")
-			@all_managing_projects = current_user.managing_projects
+			@all_managing_projects = current_user.managing_projects.order(updated_at: :desc)
 			@all_developers = User.where(role: "Developer")
-			@all_created_todo_tasks = current_user.created_todo_tasks
+			@all_created_todo_tasks = current_user.created_todo_tasks.order(updated_at: :desc)
 			@all_new_tasks = @all_created_todo_tasks.where(task_status: "New")
 			@all_in_progress_tasks = @all_created_todo_tasks.where(task_status: "In Progress")
 			@all_done_tasks = @all_created_todo_tasks.where(task_status: "Done")
-			@all_unassigned_tasks = @all_created_todo_tasks.map{|task| task if task.task_developers.blank?}
+			@all_unassigned_tasks = @all_created_todo_tasks.map{|task| task if task.task_developers.blank?}.compact
 			
 		else
-			@developing_projects = current_user.developing_projects
-			@all_assigned_tasks = current_user.development_tasks
+			@developing_projects = current_user.developing_projects.order(updated_at: :desc)
+			@all_assigned_tasks = current_user.development_tasks.order(updated_at: :desc)
 			@all_new_assigned_tasks = @all_assigned_tasks.where(task_status: "New")
 			@all_in_progress_assigned_tasks = @all_assigned_tasks.where(task_status: "In Progress")
 			@all_done_assigned_tasks = @all_assigned_tasks.where(task_status: "Done")

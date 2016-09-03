@@ -24,7 +24,7 @@
 			</th>
 			<% @all_developers.each do |developer| %>
 				<th>
-					<% @all_done_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+					<% @all_done_tasks.map{|task| task if task.task_developers.include?(developer)}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
@@ -39,7 +39,7 @@
 			</th>
 			<% @all_developers.each do |developer| %>
 				<th>
-					<% @all_in_progress_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+					<% @all_in_progress_tasks.map{|task| task if task.task_developers.include?(developer)}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
@@ -56,7 +56,7 @@
 			</th>
 			<% @all_developers.each do |developer| %>
 				<th>
-					<% @all_new_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+					<% @all_new_tasks.map{|task| task if task.task_developers.include?(developer)}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
@@ -85,7 +85,7 @@
 			</th>
 			<% @all_managing_projects.each do |project| %>
 				<th>
-					<% @all_done_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+					<% @all_done_tasks.map{|task| task if task.project_id == project.id}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
@@ -97,7 +97,7 @@
 			</th>
 			<% @all_managing_projects.each do |project| %>
 				<th>
-					<% @all_in_progress_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+					<% @all_in_progress_tasks.map{|task| task if task.project_id == project.id}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
@@ -109,7 +109,7 @@
 			</th>
 			<% @all_managing_projects.each do |project| %>
 				<th>
-					<% @all_new_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+					<% @all_new_tasks.map{|task| task if task.project_id == project.id}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
@@ -186,7 +186,7 @@
 			</th>
 			<% @developing_projects.each do |project| %>
 				<th>
-					<% @all_done_assigned_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+					<% @all_done_assigned_tasks.map{|task| task if task.project_id == project.id}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
@@ -198,7 +198,7 @@
 			</th>
 			<% @developing_projects.each do |project| %>
 				<th>
-					<% @all_in_progress_assigned_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+					<% @all_in_progress_assigned_tasks.map{|task| task if task.project_id == project.id}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
@@ -210,7 +210,7 @@
 			</th>
 			<% @developing_projects.each do |project| %>
 				<th>
-					<% @all_new_assigned_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+					<% @all_new_assigned_tasks.map{|task| task if task.project_id == project.id}.compact.each do |task| %>
 						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
 					<% end %>
 				</th>
