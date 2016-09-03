@@ -1,0 +1,13 @@
+<h1> Assign developers for this task</h1>
+
+<% if(!@new_developers.blank?) %>
+	<%= form_tag assign_developers_project_todo_task_path, method: :post do %>
+		<% @new_developers.each do |developer| %>
+			<p><label><%= check_box_tag "task_developer_ids[]", developer.id, false %> <%= developer.first_name.capitalize %> <%= developer.last_name.capitalize %> </label></p>
+		<% end %>
+		
+		<%= submit_tag "Assign developers" %>
+	<% end %>
+<% else %>
+	All available developers are already assigned for this task.
+<% end %>

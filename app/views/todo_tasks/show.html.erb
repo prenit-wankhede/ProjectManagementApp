@@ -1,0 +1,29 @@
+<p> <strong>Project name:</strong> <%= link_to @project.project_name, project_path(@project) %> </p>
+<p> <strong>Todo task name:</strong> <%= @todo_task.task_name %> </p>
+<p> <strong>Todo task description:</strong> <%= @todo_task.task_description %> </p>
+<p> <strong>Todo task status:</strong> <%= @todo_task.task_status %> </p>
+<br />
+
+<% if(@todo_task.task_creator_id == current_user.id) %>
+	<p><%= link_to "Assign new developers for this task", assign_developers_project_todo_task_path %></p>
+	<p><%= link_to "Edit task", edit_project_todo_task_path(@project, @todo_task) %>  <%= link_to "Delete task", project_todo_task_path(@project, @todo_task), method: :delete, data: { confirm: 'Are you sure?' } %></p><br/>
+<% else %>
+	<% if(@todo_task.task_developers.include?(current_user)) %>
+		<%= form_tag set_task_status_project_todo_task_path, method: :post do %>
+			<p><strong> Set todo task status </strong></p>
+			<%= select_tag :task_status, options_for_select([["New", "New"], ["In Progress", "In Progress"], ["Done", "Done"]],[@todo_task.task_status, @todo_task.task_status]), {required: true} %>
+			<%= submit_tag "Save" %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% if(!@task_developers.blank?) %>
+	<p> <strong> Assigned Developers for this task</strong></p>
+	<% @task_developers.each_with_index do |developer, index| %>
+		<p> <%= index + 1 %>. <%= developer.first_name.capitalize %> <%= developer.last_name.capitalize %> </p>
+	<% end %>
+	<br />
+
+<% end %>
+
+

@@ -1,0 +1,13 @@
+<h1> Add project developers </h1>
+
+<% if(!@new_developers.blank?) %>
+	<%= form_tag add_developers_project_path, method: :post do %>
+		<% @new_developers.each do |developer| %>
+			<p><%= check_box_tag "developer_ids[]", developer.id, false %> <%= developer.first_name.capitalize %> <%= developer.last_name.capitalize %></p>
+		<% end %>
+
+		<%= submit_tag "Add developers" %>
+	<% end %>
+<% else %>
+	<p> All available developers are already assigned to this project </p>
+<% end %>

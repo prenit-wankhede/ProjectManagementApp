@@ -1,0 +1,107 @@
+<p> <strong>Project name:</strong> <%= @project.project_name %> </p>
+<p> <strong>Project description:</strong> <%= @project.project_description %> </p>
+<p> <strong>Project manager:</strong> <%= @project_manager.first_name.capitalize %> <%= @project_manager.last_name.capitalize %></p>
+
+<% if(@project.project_manager_id == current_user.id) %>
+	<p><%= link_to "Add project developers", add_developers_project_path %></p>
+
+	<p><%= link_to "Add todo tasks to project", new_project_todo_task_path(@project) %></p>
+
+	<p><%= link_to "Edit project", edit_project_path(@project) %>  <%= link_to "Delete project", project_path(@project), method: :delete, data: { confirm: 'Are you sure?' } %></p><br/>
+<% end %>
+
+<table border="1">
+	<tr>
+		<th>
+			Status
+		</th>
+		<th>
+			Unassigned tasks
+		</th>
+		<% @project_developers.each do |developer| %>
+			<th>
+				<%= developer.first_name.capitalize %> <%= developer.last_name.capitalize %>
+			</th>
+		<% end %>
+		
+	</tr>
+	<tr>
+		<th>
+			Done
+		</th>
+		<th>
+		
+		</th>
+		<% @project_developers.each do |developer| %>
+			<th>
+				<% @all_done_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+					<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+				<% end %>
+			</th>
+		<% end %>
+	</tr>
+	<tr>
+		<th>
+			In Progress
+		</th>
+		<th>
+		
+		</th>
+		<% @project_developers.each do |developer| %>
+			<th>
+				<% @all_in_progress_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+					<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+				<% end %>
+			</th>
+		<% end %>
+	</tr>
+	<tr>
+		<th>
+			New
+		</th>
+		<th>
+			<% @all_unassigned_tasks.each do |task| %>
+				<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>
+			<% end %>
+		</th>
+		<% @project_developers.each do |developer| %>
+			<th>
+				<% @all_new_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+					<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+				<% end %>
+			</th>
+		<% end %>
+		
+	</tr>
+</table>
+<br/>
+
+
+<div id="project-<%= @project.id %>-piChart-div">
+
+</div>
+
+<script type="text/javascript">
+	if(!canAccessGoogleVisualization()){
+		google.charts.load('current', {'packages':['corechart']});
+		google.charts.setOnLoadCallback(drawChart);
+	} else{
+		drawChart();
+	}
+	
+	function drawChart(){
+		var chartDataArrayForProject = [
+			  ['Task status', 'Number of tasks'],
+			  ['New', <%= @all_new_tasks.count %>],
+			  ['In Progress', <%= @all_in_progress_tasks.count %>],
+			  ['Done',  <%= @all_done_tasks.count %>]
+		];
+		var chartOptionsForProject = {
+			title: 'Task status of <%= @project.project_name %> project',  is3D: true
+		}
+		var charDivIdForProject = 'project-<%= @project.id %>-piChart-div';
+		
+		drawPiChart(chartDataArrayForProject, chartOptionsForProject, charDivIdForProject);
+	}
+	
+</script>

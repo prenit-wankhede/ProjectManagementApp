@@ -1,0 +1,279 @@
+<% if(current_user.role == "Project Manager")%>
+	<p><%= link_to "Create new project", new_project_path %></p>
+	
+	<table border="1">
+		<tr>
+			<th>
+				Status
+			</th>
+			<th>
+				Unassigned tasks
+			</th>
+			<% @all_developers.each do |developer| %>
+				<th>
+					<%= developer.first_name.capitalize %> <%= developer.last_name.capitalize %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				Done
+			</th>
+			<th>
+			
+			</th>
+			<% @all_developers.each do |developer| %>
+				<th>
+					<% @all_done_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				In Progress
+			</th>
+			<th>
+			
+			</th>
+			<% @all_developers.each do |developer| %>
+				<th>
+					<% @all_in_progress_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				New
+			</th>
+			<th>
+				<% @all_unassigned_tasks.each do |task| %>
+					<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+				<% end %>
+			</th>
+			<% @all_developers.each do |developer| %>
+				<th>
+					<% @all_new_tasks.map{|task| task if task.task_developers.include?(developer)}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+	</table>
+	
+	<div id="all-projects-piChart-div">
+	
+	</div>
+	
+	<table border="1">
+		<tr>
+			<th>
+				Status
+			</th>
+			<% @all_managing_projects.each do |project| %>
+				<th>
+					<%= link_to project.project_name.capitalize, project_path(project) %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				Done
+			</th>
+			<% @all_managing_projects.each do |project| %>
+				<th>
+					<% @all_done_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				In Progress
+			</th>
+			<% @all_managing_projects.each do |project| %>
+				<th>
+					<% @all_in_progress_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				New
+			</th>
+			<% @all_managing_projects.each do |project| %>
+				<th>
+					<% @all_new_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+	</table>
+	<br />
+	
+	<% @all_managing_projects.each do |project| %>
+		<div id="project-<%= project.id %>-piChart-div">
+		
+		</div>
+	<% end %>
+	
+	<script type="text/javascript">
+		if(!canAccessGoogleVisualization()){
+			google.charts.load('current', {'packages':['corechart']});
+			google.charts.setOnLoadCallback(drawAllCharts);
+		}else{
+			drawAllCharts();
+		}
+      
+		function drawAllCharts() {
+
+			var chartDataArrayForAllProjects = [
+			  ['Task status', 'Number of tasks'],
+			  ['New', <%= @all_new_tasks.count %>],
+			  ['In Progress', <%= @all_in_progress_tasks.count %>],
+			  ['Done',  <%= @all_done_tasks.count %>]
+			];
+
+			var chartOptionsForAllProjects = {
+			  title: 'Task status of all projects',  is3D: true
+			};
+
+			var charDivIdForAllProjects = 'all-projects-piChart-div';
+
+			drawPiChart(chartDataArrayForAllProjects, chartOptionsForAllProjects, charDivIdForAllProjects);
+			
+			var chartDataArrayForProject;
+			var chartOptionsForProject;
+			var charDivIdForProject;
+			<% @all_managing_projects.each do |project| %>
+				chartDataArrayForProject = [
+					  ['Task status', 'Number of tasks'],
+					  ['New', <%= @all_new_tasks.where(project_id: project.id).count %>],
+					  ['In Progress', <%= @all_in_progress_tasks.where(project_id: project.id).count %>],
+					  ['Done',  <%= @all_done_tasks.where(project_id: project.id).count %>]
+				];
+				chartOptionsForProject = {
+					title: 'Task status of <%= project.project_name %> project',  is3D: true
+				}
+				charDivIdForProject = 'project-<%= project.id %>-piChart-div';
+				
+				drawPiChart(chartDataArrayForProject, chartOptionsForProject, charDivIdForProject);
+			<% end %>
+		}
+    </script>
+<% else %>
+	<table border="1">
+		<tr>
+			<th>
+				Status
+			</th>
+			<% @developing_projects.each do |project| %>
+				<th>
+					<%= link_to project.project_name.capitalize, project_path(project) %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				Done
+			</th>
+			<% @developing_projects.each do |project| %>
+				<th>
+					<% @all_done_assigned_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				In Progress
+			</th>
+			<% @developing_projects.each do |project| %>
+				<th>
+					<% @all_in_progress_assigned_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+		<tr>
+			<th>
+				New
+			</th>
+			<% @developing_projects.each do |project| %>
+				<th>
+					<% @all_new_assigned_tasks.map{|task| task if task.project_id == project.id}.each do |task| %>
+						<p><%= link_to task.task_name, project_todo_task_path(task.project, task) if !task.blank? %></p>	
+					<% end %>
+				</th>
+			<% end %>
+		</tr>
+	</table>
+	
+	<div id="all-projects-piChart-div">
+	
+	</div>
+	
+	<% @developing_projects.each do |project| %>
+		<div id="project-<%= project.id %>-piChart-div">
+		
+		</div>
+	<% end %>
+	
+	<script type="text/javascript">
+      
+	  if(!canAccessGoogleVisualization()){
+			google.charts.load('current', {'packages':['corechart']});
+			google.charts.setOnLoadCallback(drawAllCharts);
+	  }else{
+			drawAllCharts();
+	  }
+      
+      function drawAllCharts() {
+
+        var chartDataArrayForAllProjects = [
+          ['Task status', 'Number of tasks'],
+          ['New', <%= @all_new_assigned_tasks.count %>],
+          ['In Progress', <%= @all_in_progress_assigned_tasks.count %>],
+          ['Done',  <%= @all_done_assigned_tasks.count %>]
+        ];
+
+        var chartOptionsForAllProjects = {
+          title: 'Task status of all projects',  is3D: true
+        };
+
+        var charDivIdForAllProjects = 'all-projects-piChart-div';
+
+        drawPiChart(chartDataArrayForAllProjects, chartOptionsForAllProjects, charDivIdForAllProjects);
+		
+		var chartDataArrayForProject;
+		var chartOptionsForProject;
+		var charDivIdForProject;
+		<% @developing_projects.each do |project| %>
+			chartDataArrayForProject = [
+				  ['Task status', 'Number of tasks'],
+				  ['New', <%= @all_new_assigned_tasks.where(project_id: project.id).count %>],
+				  ['In Progress', <%= @all_in_progress_assigned_tasks.where(project_id: project.id).count %>],
+				  ['Done',  <%= @all_done_assigned_tasks.where(project_id: project.id).count %>]
+			];
+			chartOptionsForProject = {
+				title: 'Task status of <%= project.project_name %> project',  is3D: true
+			}
+			charDivIdForProject = 'project-<%= project.id %>-piChart-div';
+			
+			drawPiChart(chartDataArrayForProject, chartOptionsForProject, charDivIdForProject);
+		<% end %>
+      }
+    </script>
+<% end %>
+
+
+

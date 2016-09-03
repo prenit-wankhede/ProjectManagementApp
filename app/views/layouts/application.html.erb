@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <title>ProjectManagementApp</title>
+	  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+	  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+	  <%= csrf_meta_tags %>
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+	</head>
+	<body>
+		
+		<% if(user_signed_in?)%>
+			<p><strong><%= current_user.first_name.capitalize %> <%= current_user.last_name.capitalize %></strong> (<%= current_user.role %>) <span style="float: right;"> <%= link_to "Home", root_path %> <%= link_to "Logout", destroy_user_session_path, method: :delete %> </span><p><br/>
+		<% end %>		
+		<p class="alerts"><%= alert or flash[:alert] %></p>
+		<p class="notices"><%= notice or flash[:notice]%></p>
+
+		<%= yield %>
+
+	</body>
+</html>
